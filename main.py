@@ -11,7 +11,7 @@ client = commands.Bot(intents=intents, command_prefix='..')
 
 
 with open('data/token.json') as f:
-    token_key = json.load(f)
+    token_dic = json.load(f)
 
 with open('data/channels.json') as f:
     channel_dic = json.load(f)
@@ -21,4 +21,6 @@ for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
 
-client.run(token_key["serval"])
+token = token_dic["serval"]
+
+client.run(token)

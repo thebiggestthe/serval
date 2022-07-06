@@ -1,15 +1,17 @@
 from disnake.ext import commands
+from main import channel_dic
 import time
 
 class Messaging(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+        self.channel_dic = channel_dic
 
     @commands.command()
     async def msgdm(self, ctx, channel_name: str, *, message: str):
         try:
-            dmreceiver = await self.client.fetch_user(self.channeldic[channel_name])
+            dmreceiver = await self.client.fetch_user(self.channel_dic[channel_name])
             await dmreceiver.send(message)
             await ctx.send('oke')
         except:
@@ -18,7 +20,7 @@ class Messaging(commands.Cog):
     @commands.command()
     async def msg(self, ctx, channel_name: str, *, message: str):
         try:
-            channel = self.client.get_channel(self.channeldic[channel_name])
+            channel = self.client.get_channel(self.channel_dic[channel_name])
             await channel.send(message)
         except:
             await ctx.send("can't")
@@ -45,16 +47,19 @@ class Hello(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
-        if ctx.author == self.client.user:
+        if ctx.author.bot and not str(ctx.author) == 'Mosor-BOT#4095':
             return
+        
         if ctx.content.lower().startswith('gm'):
             print('Gm detected')
-            name = str(ctx.author).split('#')[0]
-            await ctx.channel.send('Gm, ' + name)
-        if 'serval' in ctx.content:
+            await ctx.channel.send('Gm, ' + ctx.author.name)
+        
+        if 'serval' in ctx.content or 'waw' in ctx.content:
             await ctx.channel.send('waw')
+        
         if ctx.guild == None:
             print(f'{ctx.author}[DM]: {ctx.content}')
+        
         else:
             print(f'{ctx.author}[{ctx.channel}]: {ctx.content}')
 
@@ -64,7 +69,7 @@ class Hello(commands.Cog):
     
     @commands.command()
     async def debug(self, ctx):
-        await ctx.send('im slutty :smile:')
+        await ctx.send(str(ctx.author))
 
     @commands.command()
     async def silence(self, ctx):
@@ -87,10 +92,10 @@ class Escape(commands.Cog):
     
     @commands.command()
     async def escapeplan(self, ctx, *, word: str):
-        def is_vulgar(m):
+        def is_word(m):
             return word.lower() in m.content
         try:
-            await ctx.channel.purge(limit=20, check=is_vulgar)
+            await ctx.channel.purge(limit=20, check=is_word)
         except:
             await ctx.send('wah')
 
