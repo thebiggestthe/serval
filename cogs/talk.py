@@ -1,6 +1,7 @@
 from disnake.ext import commands
 from main import channel_dic
 import time
+import random
 
 class Messaging(commands.Cog):
 
@@ -26,6 +27,13 @@ class Messaging(commands.Cog):
             await ctx.send("can't")
             
     @commands.command()
+    async def rate(self, ctx, *, message: str):
+        try:
+            await ctx.send('i give ' + message + ' a ' + str(random.randint(1,10)) + '/10')
+        except:
+            await ctx.send("can't")
+            
+    @commands.command()
     async def spell(self, ctx, *, motd):
         try:
             for motd_line in motd.replace(" ", ""):
@@ -34,6 +42,7 @@ class Messaging(commands.Cog):
                     time.sleep(1)
         except:
             await ctx.send('sowwy')
+    
 
 
 class Hello(commands.Cog):
@@ -57,19 +66,33 @@ class Hello(commands.Cog):
         if 'serval' in ctx.content or 'waw' in ctx.content:
             await ctx.channel.send('waw')
         
+        if ctx.content.isnumeric() and (len(ctx.content) == 6 or len(ctx.content) == 5):
+            await ctx.channel.send('https://nhentai.net/g/' + str(ctx.content))
+        
         if ctx.guild == None:
             print(f'{ctx.author}[DM]: {ctx.content}')
         
         else:
             print(f'{ctx.author}[{ctx.channel}]: {ctx.content}')
+            
+    @commands.command()
+    async def die(self, ctx):
+        print(ctx.guild.owner_id)
+        if ctx.author.id == ctx.guild.owner_id:
+            await ctx.send('https://tenor.com/view/dies-cat-dead-died-gif-13827091')
+            await self.client.close()
+        else:
+            await ctx.send('impostor')
 
     @commands.command()
     async def ping(self, ctx):
         await ctx.send('..pong')
     
     @commands.command()
-    async def debug(self, ctx):
-        await ctx.send(str(ctx.author))
+    async def debug(self, ctx, *, tag):
+        if not tag.isspace():
+            await ctx.send('https://nhentai.net/search/?q=' + tag +'&sort=popular')
+            await ctx.send(ctx.guild.icon)
 
     @commands.command()
     async def silence(self, ctx):
