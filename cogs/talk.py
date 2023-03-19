@@ -8,7 +8,9 @@ class Messaging(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.channel_dic = channel_dic
+    
 
+    # Sends a message to a single user
     @commands.command()
     async def msgdm(self, ctx, channel_name: str, *, message: str):
         try:
@@ -18,6 +20,7 @@ class Messaging(commands.Cog):
         except:
             await ctx.send("e")
 
+    # Sends a message to a specific channel
     @commands.command()
     async def msg(self, ctx, channel_name: str, *, message: str):
         try:
@@ -26,22 +29,13 @@ class Messaging(commands.Cog):
         except:
             await ctx.send("can't")
             
+    # Rates argument from a scale of 1 to 10
     @commands.command()
     async def rate(self, ctx, *, message: str):
         try:
             await ctx.send('i give ' + message + ' a ' + str(random.randint(1,10)) + '/10')
         except:
             await ctx.send("can't")
-            
-    @commands.command()
-    async def spell(self, ctx, *, motd):
-        try:
-            for motd_line in motd.replace(" ", ""):
-                async with ctx.typing():
-                    await ctx.send(motd_line)
-                    time.sleep(1)
-        except:
-            await ctx.send('sowwy')
     
 
 
@@ -50,31 +44,36 @@ class Hello(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    # Initialized message in the terminal
     @commands.Cog.listener()
     async def on_ready(self):
         print('lets do this')
 
+    # Message Listener
     @commands.Cog.listener()
     async def on_message(self, ctx):
+        # Exclude Mosor-BOT
         if ctx.author.bot and not str(ctx.author) == 'Mosor-BOT#4095':
             return
         
+        # Says Good Morning back to the user
         if ctx.content.lower().startswith('gm'):
             print('Gm detected')
             await ctx.channel.send('Gm, ' + ctx.author.name)
         
+        # Says "waw" when hearing her name
         if 'serval' in ctx.content or 'waw' in ctx.content:
             await ctx.channel.send('waw')
         
-        if ctx.content.isnumeric() and (len(ctx.content) == 6 or len(ctx.content) == 5):
-            await ctx.channel.send('https://nhentai.net/g/' + str(ctx.content))
-        
+        # displays DM replies in the terminal
         if ctx.guild == None:
             print(f'{ctx.author}[DM]: {ctx.content}')
         
+        # displays server messages in the terminal
         else:
             print(f'{ctx.author}[{ctx.channel}]: {ctx.content}')
             
+    # Sends a funny gif
     @commands.command()
     async def die(self, ctx):
         print(ctx.guild.owner_id)
@@ -84,26 +83,23 @@ class Hello(commands.Cog):
         else:
             await ctx.send('impostor')
 
+    # Ping Pong
     @commands.command()
     async def ping(self, ctx):
         await ctx.send('..pong')
     
-    @commands.command()
-    async def debug(self, ctx, *, tag):
-        if not tag.isspace():
-            await ctx.send('https://nhentai.net/search/?q=' + tag +'&sort=popular')
-            await ctx.send(ctx.guild.icon)
-
+    # Sends back a Vince gif
     @commands.command()
     async def silence(self, ctx):
         await ctx.send('https://tenor.com/view/vince-mcmahon-order-gif-20615354')
 
 
-class Escape(commands.Cog):
+class Cleanup(commands.Cog):
     
     def __init__(self, client):
         self.client = client
     
+    # Counts the number of times a word has been said in the last n messages
     @commands.command()
     async def count(self, ctx, *, word: str):
         messages = await ctx.channel.history(limit=2000).flatten()
@@ -113,6 +109,7 @@ class Escape(commands.Cog):
                 messagecount += 1
         await ctx.send(word + ' has been said ' + str(messagecount) + ' times')
     
+    # Deletes messages containing a certain word
     @commands.command()
     async def escapeplan(self, ctx, *, word: str):
         def is_word(m):
@@ -126,4 +123,4 @@ class Escape(commands.Cog):
 def setup(client):
     client.add_cog(Hello(client))
     client.add_cog(Messaging(client))
-    client.add_cog(Escape(client))
+    client.add_cog(Cleanup(client))
